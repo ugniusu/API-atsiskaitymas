@@ -76,9 +76,6 @@ const getArt = async (ev) => {
         const date = document.createElement("em");
         date.textContent = art.creation_date;
 
-        // const info = document.createElement("p");
-        // info.textContent = art.Year;
-
         card.appendChild(artPic);
         card.appendChild(title);
         card.appendChild(artist);
