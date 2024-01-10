@@ -1,7 +1,12 @@
 // "use strict";
+const btnInputContainer = document.createElement("div");
+document.body.appendChild(btnInputContainer);
 
 const container = document.createElement("div");
 document.body.appendChild(container);
+container.style.display = "grid";
+container.style.gap = "50px";
+container.style.gridTemplateColumns = "repeat(4, 1fr)";
 
 let input = document.createElement("input");
 input.type = "text";
@@ -9,62 +14,81 @@ input.placeholder = "Search art";
 
 const button = document.createElement("button");
 button.textContent = "Get Art";
-container.append(input, button);
+btnInputContainer.append(input, button);
 button.style.borderRadius = "50px";
 button.style.padding = "10px 50px";
 button.style.backgroundColor = "#38220f";
 button.style.color = "#fff";
 button.style.fontWeight = "700";
 
-const getPhotos = async (ev) => {
-  // ev.preventDefault();
-  const result = await fetch(
-    `https://openaccess-api.clevelandart.org/api/artworks?limit=20&has_image=1&q=${inputField.value}`
-  );
-  console.log(result);
-
-  const data = await result.json();
-  console.log(data);
-
-  data.forEach((img) => {
-    const photo = document.createElement("img");
-    photo.src = img.urls.regular;
-    photo.alt = photo.alt_description;
-    container.appendChild(photo);
-    photo.style.width = "25%";
-  });
-};
-
-const getQueryPhotos = async (event) => {
-  event.preventDefault();
-
+const getMovie = async (ev) => {
+  ev.preventDefault();
   const inputValue = input.value.trim();
-  console.log(inputValue);
 
   const result = await fetch(
-    `https://api.unsplash.com/search/photos/?client_id=${API}&query=${inputValue}&per_page=7`
+    `https://openaccess-api.clevelandart.org/api/artworks?limit=10&has_image=1&q=${inputValue}`
   );
   console.log(result);
 
   const data = await result.json();
   console.log(data);
 
-  if (data.results.length === 0) {
+  if (result.status === 404) {
     const infoElement = document.createElement("h2");
-    infoElement.textContent = "Data not found";
-    container.appendChild(infoElement);
+    infoElement.textContent = "Art not found";
+    container.append(infoElement);
   } else {
-    data.results.forEach((img) => {
-      const photo = document.createElement("img");
-      photo.className = "image";
-      photo.src = img.urls.regular;
-      photo.all = img.alt_description;
-      photo.style.width = "250px";
-      photo.style.objectFit = "cover";
-      container.appendChild(photo);
+    const allCards = document.querySelectorAll(".card");
+    allCards.forEach((card) => {
+      card.remove();
     });
+
+    if (Array.isArray(data.data)) {
+      data.data.map((art) => {
+        const card = document.createElement("div");
+        card.style.marginTop = "50px";
+        card.className = "card";
+        card.style.display = "flex";
+        card.style.flexDirection = "column";
+        card.style.alignItems = "center";
+        card.style.justifyContent = "center";
+        card.style.border = "1px solid black";
+
+        const artPic = document.createElement("img");
+        artPic.src = art.images.web.url;
+        artPic.alt = art.title;
+        artPic.style.width = "50vh";
+        artPic.style.marginBottom = "0";
+        artPic.style.marginTop = "50px";
+
+        const title = document.createElement("h3");
+        title.textContent = art.title;
+        title.style.marginBottom = "0";
+        const artist = document.createElement("p");
+
+        art.creators.forEach((author) => {
+          console.log(author.description);
+          artist.textContent = author.description;
+        });
+
+        const date = document.createElement("em");
+        date.textContent = art.creation_date;
+
+        // const info = document.createElement("p");
+        // info.textContent = art.Year;
+
+        card.appendChild(artPic);
+        card.appendChild(title);
+        card.appendChild(artist);
+        card.appendChild(date);
+        container.appendChild(card);
+      });
+    } else {
+      const infoElement = document.createElement("h2");
+      infoElement.textContent = "No movies found";
+      container.append(infoElement);
+    }
   }
 };
-button.addEventListener("click", getQueryPhotos);
-
-getPhotos();
+button.addEventListener("click", getMovie);
+getMovie();
