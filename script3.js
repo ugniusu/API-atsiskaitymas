@@ -1,4 +1,6 @@
 // "use strict";
+document.body.style.backgroundColor = "#daedf4";
+
 const btnInputContainer = document.createElement("div");
 document.body.appendChild(btnInputContainer);
 
@@ -17,12 +19,12 @@ button.textContent = "Get Art";
 btnInputContainer.append(input, button);
 button.style.borderRadius = "50px";
 button.style.padding = "10px 50px";
-button.style.backgroundColor = "#38220f";
+button.style.backgroundColor = "#389abe";
 button.style.color = "#fff";
 button.style.fontWeight = "700";
 
-const getMovie = async (ev) => {
-  ev.preventDefault();
+const getArt = async (ev) => {
+  // ev.preventDefault();
   const inputValue = input.value.trim();
 
   const result = await fetch(
@@ -90,5 +92,5 @@ const getMovie = async (ev) => {
     }
   }
 };
-button.addEventListener("click", getMovie);
-getMovie();
+button.addEventListener("click", getArt);
+getArt();
